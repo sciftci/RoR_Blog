@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>
+<html class="ie ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title><%= h yield(:title) %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="keywords" content="<%= h yield(:meta_keywords) %>"/>
+  <meta name="description" content="<%= h yield(:meta_descriptions) %>"/>
+
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu:400,300,400italic,500,700' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag 'bootstrap.css' %>
+  <%= stylesheet_link_tag 'bootstrap-responsive.css' %>
+  <%= stylesheet_link_tag 'main.css' %>
+  <%= stylesheet_link_tag 'prism.css' %>
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <%= javascript_include_tag "jquery.min.js" %>
+  <%= javascript_include_tag "prism.js" %>
+  <%= javascript_include_tag "mediaelement.min.js" %>
+  <%= javascript_include_tag "jquery.flexslider-min.js" %>
+  <%= javascript_include_tag "jquery-ui-1.10.3.custom.min.js" %>
+  <%= javascript_include_tag "custom.js" %>
+
+  <link rel="shortcut icon" href="<%=asset_path "favicon.ico" %>">
+
+</head>
+<body class="body-container">
+
+
+<% if flash[:status] == FALSE %>
+    <div class="alert alert-dismissable alert-danger" style="margin-bottom: 0;">
+      <p style="font-weight: bold"><%= flash[:notice] %></p>
+    </div>
+<% end %>
+
+<!-- header -->
+<header id="header" class="header">
+
+
+  <!-- container -->
+  <div class="container">
+
+    <div class="row">
+
+
+      <!-- span12 -->
+      <div class="span12">
+
+        <!-- logo -->
+        <div class="logo">
+
+          <a href="/">
+            <h2 class="logo"><%= t :txt_blog_name %></h2>
+          </a>
+
+        </div>
+        <!-- end logo -->
+
+
+        <!-- top content -->
+        <div class="top-content">
+
+
+          <!-- menu -->
+          <nav class="menu">
+            <ul>
+              <li><%= link_to "#{t :txt_home_page}", "/" %></li>
+              <li><%= link_to "#{t :txt_labs}", "/labs" %></li>
+              <li><%= link_to "#{t :txt_contact}", "/contact" %></li>
+            </ul>
+          </nav>
+
+
+          <!-- search and toggle  -->
+          <div class="search">
+            <%= form_for(:search, :url => '/search', :html => {:class => "top-search"}) do |sf| %>
+                <%= sf.text_field(:keyword, :class => "s", :placeholder => "ara...") %>
+                <%= submit_tag "", :class => "submit" %>
+            <% end %>
+
+
+            <!-- toggle button -->
+            <a href="#" class="toggleSidebar"></a>
+
+
+          </div>
+          <!-- end search -->
+
+
+        </div>
+        <!-- end top content -->
+
+
+      </div>
+      <!-- end span12 -->
+
+    </div>
+    <!-- end row -->
+
+  </div>
+  <!-- end container -->
+
+</header>
+<!-- /header -->
+
+
+<!-- top sidebar -->
+<section class="top-sidebar" style="padding-top:100px;">
+
+  <!-- container -->
+  <div class="container">
+    <div class="row">
+
+
+      <!-- widget -->
+      <div class="widget cats-widget span4">
+
+        <h3><%= t :txt_categories %></h3>
+
+        <div class="widget-content">
+
+
+          <ul>
+            <% $all_categories.each do |cat| %>
+                <li><%= link_to "#{cat.title}", "/category/#{cat.id}/#{slugtitle(cat.title)}" %>
+                  <span><%= CountPost(cat.id) %></span></li>
+            <% end %>
+          </ul>
+
+
+        </div>
+        <!-- end widget content -->
+
+
+      </div>
+      <!-- end widget -->
+
+
+      <%
+         if session[:user_id].nil? %>
+          <!-- widget -->
+          <div class="widget span4">
+
+            <h3><%= t :txt_login %></h3>
+
+            <div class="widget-content">
+              <%= form_for(:login, :url => "/login", :html => {:class => "login-form", :id => "login"}) do |login| %>
+                  <%= login.text_field(:username, :class => "s", :placeholder => "#{t :txt_username}") %>
+                  <%= login.password_field(:password, :class => "s", :placeholder => "#{t :txt_password}") %>
+                  <br><%= submit_tag "#{t :txt_login}", :class => "btn btn-warning", :style => "color:#fff" %>
+              <% end %>
+            </div>
+            <!-- end widget content -->
+
+
+          </div>
+          <!-- end widget -->
+      <% else %>
+
+
+          <!-- widget -->
+          <div class="widget span4">
+
+            <h3><%= t :txt_logged_title %></h3>
+
+            <div class="widget-content">
+              <ul>
+                    <li><%= link_to "#{t :txt_user_panel}", "/profile/update" %></li>
+                    <li><%= link_to "#{t :txt_my_posts}", "/profile/my_posts" %></li>
+                    <li><%= link_to "#{t :txt_logout}", "/logout" %></li>
+              </ul>
+            </div>
+            <!-- end widget content -->
+
+
+          </div>
+          <!-- end widget -->
+          <!-- widget -->
+          <div class="widget span4">
+
+            <h3><%= session[:user].name %></h3>
+
+            <div class="widget-content">
+              <div class="avatar left">
+                <img src="http://www.gravatar.com/avatar/<%= Digest::MD5.hexdigest(session[:user].email.downcase) %>" alt="<%= session[:user].name %>">
+              </div>
+              <div class="user_info">
+                <% if ! session[:user].twitter.empty? && ! session[:user].facebook.empty? %>
+                    <div class="social-icons">
+                <% end %>
+                <% if ! session[:user].facebook.empty? %>
+                    <%= link_to "", "http://facebook.com/#{session[:user].facebook}", :target => "_blank", :class => "facebook" %>
+                    <% if ! session[:user].twitter.empty? %>
+                        <%= link_to "", "http://twitter.com/#{session[:user].twitter}", :target => "_blank", :class => "tumblr" %>
+                    <% end %>
+                    </div>
+                <% end %>
+              </div>
+            </div>
+            <!-- end widget content -->
+
+
+          </div>
+          <!-- end widget -->
+
+      <% end %>
+
+    </div>
+    <!-- end row -->
+  </div>
+  <!-- end container -->
+
+</section>
+<!-- end top sidebar -->
+
+
+<!-- blog  -->
+<section class="blog">
+
+
+  <div class="container">
+    <div class="row">
+
+
+      <%= yield %>
+
+
+    </div>
+    <!-- end row -->
+  </div>
+  <!-- end container -->
+
+
+</section>
+<!-- end blog -->
+
+
+<!-- footer -->
+<footer>
+
+  <div class="container">
+    <div class="row">
+
+
+      <!-- copyrights -->
+      <div class="copyrights">
+
+        <p class="light-font"><%= t :txt_copyright %></p>
+        <p class="light-font">My name is SDev Blog <br/> We <img src="<%=asset_path "heart.png"%>" height="25" width="25"> Ruby On Rails !</p>
+
+      </div>
+      <!-- end copyrights -->
+
+
+      <div class="divider-half"></div>
+
+
+      <!-- social icons -->
+      <div class="social-icons">
+        <%= link_to "", "#", :class => "facebook" %>
+        <%= link_to "", "http://twitter.com/sdt_ciftci",:target => "_blank", :class => "twitter" %>
+        <!--
+        <a class="twitter" href="#"></a>
+        <a class="linkedin" href="#"></a>
+        <a class="dribbble" href="#"></a>
+        <a class="flickr" href="#"></a>
+        <a class="skype" href="#"></a>
+        <a class="pinterest" href="#"></a>
+        <a class="vimeo" href="#"></a>
+        <a class="youtube" href="#"></a>
+        -->
+      </div>
+      <!-- end social icons -->
+
+
+    </div>
+    <!-- end row -->
+  </div>
+  <!-- end container -->
+
+</footer>
+<!-- end footer -->
+
+</body>
+</html>

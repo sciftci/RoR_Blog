@@ -1,0 +1,27 @@
+
+<div class="jumbotron">
+  <% if flash[:status] == FALSE %>
+     <div class="alert alert-dismissable alert-danger">
+        <p><%= flash[:notice] %></p>
+     </div>
+  <% end %>
+  <h2>Yönetici Girişi</h2>
+  <%= form_for(:admin, :url => "/admin/login", :method => "post", :class => "bs-example") do |f| %>
+
+      <div class="form-group">
+        <%= f.label("Kullanıcı Adı",:class => "control-label", :for => "admin_username") %>
+        <%= f.text_field(:username, :class => "form-control", :placeholder => "Kullanıcı Adı") %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("Şifre",:class => "control-label", :for => "admin_password") %>
+        <%= f.password_field(:password, :class => "form-control", :placeholder => "Şifre") %>
+      </div>
+
+      <div class="form-group">
+        <%= submit_tag "Giriş", :class => "btn btn-success", :style => "width:100%; height:50px" %>
+      </div>
+
+  <% end %>
+</div>
+            

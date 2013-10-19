@@ -1,0 +1,31 @@
+<div class="flash">
+  <% if flash[:status] == TRUE %>
+      <div class="alert alert-success">
+        <%= flash[:notice] %>
+      </div>
+  <% elsif flash[:status] == FALSE %>
+      <% flash[:notice].each do |errors| %>
+          <div class="alert alert-error">
+            <%= errors %>
+          </div>
+      <% end %>
+  <% end %>
+</div>
+
+
+
+<%= form_for(:post, :url => add_post_path) do |f| %>
+    <%= f.label(:tite) %>
+    <%= f.text_field(:tite) %><br/>
+    <%= f.label(:categories_id) %>
+    <select name="post[categories_id]">
+      <option value="">Seçiniz</option>
+      <% @categories.each do |category| %>
+         <option value="<%= category.id %>"><%= category.title %></option>
+      <% end %>
+    </select>
+    <br/>
+    <%= f.label(:body) %>
+    <%= f.text_area(:body) %>
+    <input type="submit" value="Add">
+<% end %>

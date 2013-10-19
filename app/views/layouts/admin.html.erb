@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SBlog - Yönetim Paneli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,500,700,700italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="http://bootswatch.com/slate/bootstrap.css" media="screen">
+  <link rel="stylesheet" href="http://bootswatch.com/bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://bootswatch.com/assets/css/bootswatch.min.css">
+
+  <script src="http://bootswatch.com/assets/js/bsa.js"></script>
+  <script src="http://bootswatch.com/bower_components/jquery/jquery.min.js"></script>
+  <script src="http://bootswatch.com/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <%= javascript_include_tag "editor/ckeditor.js" %>
+
+  <script>
+      /*$('.editor').ckeditor();*/
+
+          CKEDITOR.replace('.editor',{
+              allowedContent: true,
+          });
+  </script>
+
+  <style>
+      body {
+          font-family: 'Ubuntu', sans-serif;
+          font-weight: 300;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+          font-family: 'Ubuntu', sans-serif;
+      }
+
+          .user_profile {
+              margin-top: 12px;
+              margin-right: 5px;
+          }
+  </style>
+</head>
+<body>
+<% if session[:is_admin] == true %>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/admin" class="navbar-brand">SBlog Admin Panel</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"><%= t :txt_posts %>
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" aria-labelledby="themes">
+                <li><%= link_to "#{t :txt_new_post}", "/admin/post/new" %></li>
+                <li><%= link_to "#{t :txt_post_list}", "/admin/post" %></li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"><%= t :txt_categories %>
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" aria-labelledby="themes">
+                <li><%= link_to "#{t :txt_new_category}", "/admin/category/new" %></li>
+                <li><%= link_to "#{t :txt_category_list}", "/admin/category" %></li>
+              </ul>
+            </li>
+
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes"><%= t :txt_comments %>
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu" aria-labelledby="themes">
+                <li><%= link_to "#{t :txt_comment_list}", "/admin/comments/" %></li>
+              </ul>
+            </li>
+
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            <li><%= link_to "#{t :txt_welcome_message} " + session[:username] + " !", "/admin/user/profile" %></li>
+            <li><%= link_to "#{t :txt_logout}", "/admin/user/logout" %></li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+<% end %>
+<div class="container">
+  <% if flash[:status] == TRUE %>
+      <div class="alert alert-dismissable alert-success">
+        <p><%= flash[:notice] %></p>
+      </div>
+  <% end %>
+
+  <%= yield %>
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,69 @@
+
+<div class="jumbotron">
+  <% if flash[:status] == FALSE %>
+      <% if flash[:notice].kind_of?(Array) == true %>
+
+          <% flash[:notice].each do |error| %>
+              <div class="alert alert-dismissable alert-danger">
+                <p><%= error %></p>
+              </div>
+          <% end %>
+
+      <% else %>
+          <div class="alert alert-dismissable alert-danger">
+            <p><%= flash[:notice] %></p>
+          </div>
+      <% end %>
+
+  <% end %>
+
+  <h2><%= t :txt_new_post %></h2>
+
+  <%= form_for(:post, :url => "/admin/post/create/", :method => "post", :class => "bs-example") do |f| %>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_title}",:class => "control-label", :for => "post_title") %>
+        <%= f.text_field(:title,:class => "form-control") %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_summary}",:class => "control-label", :for => "post_summary") %>
+        <%= f.text_area(:summary,:class => "form-control ckeditor") %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_content}",:class => "control-label", :for => "post_body") %>
+        <%= f.text_area(:body,:class => "form-control ckeditor") %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_tags}",:class => "control-label", :for => "post_tags") %>
+        <%= f.text_field(:tags,:class => "form-control") %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_categories}",:class => "control-label", :for => "post_categories_id") %>
+        <select name="post[categories_id]" class="form-control">
+          <option value="">Seçiniz</option>
+          <% @categories.each do |category| %>
+              <option value="<%= category.id %>" <% if category.id == @post.categories_id %> selected="true" <% end %>><%= category.title %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_meta_keyword}",:class => "control-label", :for => "post_meta_keywords") %>
+        <%= f.text_field(:meta_keyword, :class => "form-control") %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_meta_description}",:class => "control-label", :for => "post_meta_description") %>
+        <%= f.text_field(:meta_description, :class => "form-control") %>
+      </div>
+
+      <div class="form-group">
+        <%= submit_tag "#{t :txt_add}", :class => "btn btn-success", :style => "width:100%; height:50px; font-weight:bold;" %>
+      </div>
+
+  <% end %>
+</div>

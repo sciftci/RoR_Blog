@@ -1,0 +1,88 @@
+<% content_for :title, "#{t :txt_defualt_title}" %>
+<% content_for :meta_keywords, "#{t :txt_default_meta_keywords}" %>
+<% content_for :meta_descriptions, "#{t :txt_defaullt_meta_description}" %>
+
+<% @posts.each do |post| %>
+
+    <!-- single post [post with image] -->
+    <div class="single-post">
+
+      <!-- post content -->
+      <div class="post-content">
+
+
+        <div class="span12">
+
+
+          <!-- post inner content -->
+          <div class="post-inner-content">
+
+            <h2 class="post-header">
+              <%= link_to "#{post.title}", post_path(post) %>
+            </h2>
+
+            <!-- meta -->
+            <div class="post-meta">
+              <span class="date"><%= l post.created_at, format: :short %></span>
+              <span class="comments"><%= "#{count_comment(post.id)} " + "#{t :txt_comment }"%></span>
+              <span class="date"><%= link_to "#{IdToTitle(post.categories.id)}", "/category/#{post.categories_id}/#{slugtitle(IdToTitle(post.categories_id))}" %></span>
+              <span class="date"><%= link_to "#{admin_name(post.author)}", "/#{get_username(post.author)}" %></span>
+            </div>
+            <!-- end post meta -->
+
+
+            <!-- post main content -->
+            <div class="main-content">
+              <p><%= strip_tags(post.summary) %></p>
+            </div>
+            <!-- end main content -->
+
+            <div class="clearfix"></div>
+
+
+            <!-- read more button -->
+            <div class="readmore">
+                <%= link_to "#{t :txt_cnt_reading}", post_path(post) %>
+            </div>
+            <!-- ene read more -->
+
+
+          </div>
+          <!-- end inner content -->
+
+
+        </div>
+        <!-- end span12 -->
+
+
+      </div>
+      <!-- end post content -->
+
+
+    </div>
+    <!-- end single post -->
+<% end %>
+<!--
+<div class="blog-pagination span12">
+
+
+  <div class="wrap">
+
+
+    <a href="#" class="prev"></a>
+
+    <div class="items-wrap">
+      <ul>
+        <li><a href="#">1</a></li>
+        <li><a class="active" href="#">2</a></li>
+        <li><a href="#">3</a></li>
+      </ul>
+    </div>
+
+    <a href="#" class="next"></a>
+
+
+  </div>
+
+
+</div>-->

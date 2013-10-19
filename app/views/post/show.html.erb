@@ -1,0 +1,238 @@
+<% content_for :title, "#{t :txt_default_name} @ #{t :txt_post} # #{@post.title}" %>
+<% content_for :meta_keywords, "#{@post.meta_keyword}" %>
+<% content_for :meta_descriptions, "#{@post.meta_description}" %>
+<div class="single-post">
+<!-- post image -->
+
+<!-- end post image -->
+
+
+<!-- post content -->
+<div class="post-content">
+
+
+<div class="span12">
+
+
+<!-- post inner content -->
+<div class="post-inner-content">
+
+  <h2 class="post-header"><%= @post.title %></h2>
+
+
+  <!-- meta -->
+  <div class="post-meta">
+
+    <span class="date"><%= l @post.created_at, format: :short %></span>
+    <span class="comments"><%= "#{@count_comments} #{t :txt_comment}" %></span>
+    <span class="date"><%= link_to "#{IdToTitle(@post.categories.id)}", "/category/#{@post.categories_id}/#{slugtitle(IdToTitle(@post.categories_id))}" %></span>
+    <span class="date"><%= link_to "#{admin_name(@post.author)}", "/#{get_username(@post.author)}" %></span>
+  </div>
+  <!-- end post meta -->
+
+
+  <!-- post main content -->
+  <div class="main-content single-post-main-content">
+    <div class="content">
+      <%= raw replace(@post.body) %>
+    </div>
+    <!-- end content -->
+  </div>
+  <!-- end main content -->
+
+
+  <!-- share and tags -->
+  <div class="post-share">
+
+
+    <!-- tags -->
+    <div class="tags">
+
+      <% @post.tags.split(',').each do |tag| %>
+          <%= link_to "##{tag}", "/search/#{tag}" %>
+      <% end %>
+
+
+    </div>
+    <!-- end tags -->
+
+
+    <!-- share box -->
+    <div class="share-box">
+      <div class="social-icons">
+        <%= link_to "","http://www.facebook.com/sharer/sharer.php?s=100&p[url]=#{request.url}&p[title]=#{@post.title}&p[summary]=#{u strip_tags(@post.summary)}", :target => "_blank", :class => "facebook" %>
+        <%= link_to "", "http://twitter.com/home?status=#{u t :txt_default_name} @ #{@post.title} - #{request.url}", :target => "_blank", :class => "twitter" %>
+        <%= link_to "", "http://pinterest.com/pin/create/button/?url=#{u request.url}&media=http://www.gravatar.com/avatar/3098981ba52983f278c573633652d891.jpg&description=#{u strip_tags(@post.summary)}", :target => "_blank", :class => "pinterest" %>
+      </div>
+
+      <!-- end social icons -->
+
+      <%= link_to "#{t :txt_share}", "#", :class => "button toggle-share-box" %>
+
+
+    </div>
+    <!-- end share box -->
+
+
+  </div>
+  <!-- end post share -->
+
+
+</div>
+<!-- end inner content -->
+
+
+<!-- author -->
+<div class="post-inner-content secondary-content-box">
+
+
+  <!-- author bio -->
+  <div class="author-bio">
+
+
+    <!-- avatar -->
+    <div class="avatar">
+      <img src="http://www.gravatar.com/avatar/<%= Digest::MD5.hexdigest(@admin.email) %>.jpg" alt="<%= @admin.name %>">
+    </div>
+    <!-- end avatar -->
+
+
+    <!-- user bio -->
+    <div class="author-bio-content">
+
+      <h4>
+        <% if @admin.website.empty? %>
+            <%= @admin.name %>
+        <% else %>
+            <%= link_to "#{@admin.name}", "#{@admin.website}", :target => "_blank" %>
+        <% end %>
+      </h4>
+
+      <p>
+        <%= replace(@admin.about) %>
+      </p>
+
+      <% if !@admin.twitter.empty? && !@admin.facebook.empty? %>
+          <div class="social-icons">
+      <% end %>
+      <% if !@admin.facebook.empty? %>
+          <%= link_to "", "http://facebook.com/#{@admin.facebook}", :target => "_blank", :class => "facebook" %>
+          <% if !@admin.twitter.empty? %>
+              <%= link_to "", "http://twitter.com/#{@admin.twitter}", :target => "_blank", :class => "tumblr" %>
+          <% end %>
+          </div>
+      <% end %>
+
+    </div>
+    <!-- end author bio -->
+
+
+  </div>
+  <!-- end author bio -->
+
+</div>
+<!-- end author -->
+
+
+<!-- comments -->
+<% if @count_comments > 0 %>
+    <div class="comments post-inner-content secondary-content-box">
+
+
+      <h2><%= "#{@count_comments}  #{t :txt_comment}" %></h2>
+
+
+
+      <% @comments.each do |comment| %>
+          <!-- single comment -->
+          <div class="single-comment" id="comment-<%= comment.id %>">
+
+
+            <!-- avatar -->
+            <div class="avatar">
+              <img src="http://www.gravatar.com/avatar/<%= Digest::MD5.hexdigest(comment.email) %>.jpg" alt="<%= comment.name %>">
+            </div>
+            <!-- end avatar -->
+
+
+            <!-- comment content -->
+            <div class="comment-content">
+              <h4>
+                <% if comment.website.empty? or comment.website.nil? %>
+                    <%= link_to "#{comment.name}", "#" %>
+                <% else %>
+                    <%= link_to "#{comment.name}", "#{comment.website}", :target => "_blank" %>
+                <% end %>
+              </h4>
+              <span class="comment-date"><%= comment.created_at %></span>
+
+              <div class="comment-body"><p>
+                <%= comment.comment %>
+              </p></div>
+
+
+            </div>
+            <!-- end comment content -->
+
+          </div>
+          <!-- end single comment -->
+      <% end %>
+
+    </div>
+<% end %>
+<!-- end comments -->
+
+
+<!-- comments form -->
+<div class="post-inner-content comments-form secondary-content-box" id="reports">
+
+
+  <% if flash[:status] == FALSE %>
+
+      <% if flash[:notice].kind_of?(Array) == true %>
+
+          <% flash[:notice].each do |error| %>
+              <div class="alert alert-error"><%= error %></div>
+          <% end %>
+
+      <% else %>
+
+          <div class="alert alert-error"><%= flash[:notice] %></div>
+
+      <% end %>
+
+  <% elsif flash[:status] == TRUE %>
+      <div class="alert alert-success"><%= flash[:notice] %></div>
+  <% end %>
+
+  <h2><%= t :txt_leave_comment %></h2>
+
+  <p class="light-font">
+    <%= t :txt_comment_alert %>
+  </p>
+
+  <%= form_for(:comment, :url => "/post/comment/#{params[:id]}/") do |f| %>
+      <%= f.text_field(:name, :placeholder => "#{t :txt_comment_name}", :value => "#{session[:user] ? session[:user].name : session[:comment_name]}") %>
+      <%= f.text_field(:email, :placeholder => "#{t :txt_comment_email}", :value => "#{session[:user] ? session[:user].email : session[:comment_email]}") %>
+      <%= f.text_field(:website, :placeholder => "#{t :txt_comment_www}", :value => "#{session[:user] ? session[:user].website : session[:comment_website]}") %>
+      <%= f.text_area(:comment_body, :placeholder => "#{t :txt_comment_comment}", :class => "message") %>
+      <%= f.hidden_field(:content_id, :value => "#{params[:id]}") %>
+      <%= submit_tag "#{t :txt_comment_send}", :class => "submit-comment" %>
+  <% end %>
+
+</div>
+<!-- end comments form -->
+
+
+<div class="divider"></div>
+
+
+</div>
+<!-- end span12 -->
+
+
+</div>
+<!-- end post content -->
+
+
+</div>

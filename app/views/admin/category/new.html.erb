@@ -1,0 +1,34 @@
+
+<div class="jumbotron">
+  <% if flash[:status] == FALSE %>
+      <% if flash[:notice].kind_of?(Array) == true %>
+
+          <% flash[:notice].each do |error| %>
+              <div class="alert alert-dismissable alert-danger">
+                <p><%= error %></p>
+              </div>
+          <% end %>
+
+      <% else %>
+          <div class="alert alert-dismissable alert-danger">
+            <p><%= flash[:notice] %></p>
+          </div>
+      <% end %>
+
+  <% end %>
+
+  <h2><%= t :txt_new_category %></h2>
+
+  <%= form_for(:category, :url => "/admin/category/new", :method => "post", :class => "bs-example") do |f| %>
+
+      <div class="form-group">
+        <%= f.label("#{t :txt_title}",:class => "control-label", :for => "post_title") %>
+        <%= f.text_field(:title,:class => "form-control") %>
+      </div>
+
+      <div class="form-gro  up">
+        <%= submit_tag "#{t :txt_add}", :class => "btn btn-success", :style => "width:100%; height:50px; font-weight:bold;" %>
+      </div>
+
+  <% end %>
+</div>
